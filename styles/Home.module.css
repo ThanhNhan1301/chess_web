@@ -1,0 +1,35 @@
+.container {
+	display: flex;
+	width: 100%;
+	min-height: 100vh;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background-image: url('/background/home.jpg');
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.btnPlayWithFriends {
+	background-color: rgb(253, 161, 176);
+	color: #eee;
+	transition: all 0.3s ease-in-out;
+	min-width: 300px;
+	margin-bottom: 30px;
+}
+
+.btnPlayWithFriends:hover {
+	background-color: palevioletred;
+}
+
+.btnPlayMatchPlayer {
+	background-color: blueviolet;
+	color: #eee;
+	transition: all 0.3s ease-in-out;
+	min-width: 300px;
+}
+
+.btnPlayMatchPlayer:hover {
+	background-color: purple;
+}

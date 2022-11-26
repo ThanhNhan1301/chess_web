@@ -1,0 +1,22 @@
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("/background//signin.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.btnSignin {
+  background-color: purple;
+  color: white;
+  opacity: 0.8;
+  transition: all 0.3s ease-in-out;
+}
+
+.btnSignin:active {
+  opacity: 1;
+}
