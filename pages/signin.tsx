@@ -7,7 +7,7 @@ function Signin() {
 	const handleSignin = React.useCallback(async () => {
 		const providerGoogle = new GoogleAuthProvider()
 		await signInWithPopup(auth, providerGoogle)
-	}, [auth])
+	}, [])
 	return (
 		<div className={styles.container}>
 			<button className={styles.btnSignin} onClick={handleSignin}>
