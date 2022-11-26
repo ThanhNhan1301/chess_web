@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { AiFillCloseSquare } from 'react-icons/ai'
-import styles from '../../styles/Modal.module.css'
+import styles from '../styles/Modal.module.css'
 import MatchPlayer from './MatchPlayer'
 import PlayFriend from './PlayFriend'
 
@@ -10,7 +10,7 @@ interface PropsType {
 	onClose: () => void
 }
 
-function ModalModeGame({ type, onClose }: PropsType) {
+export default function ModalModeGame({ type, onClose }: PropsType) {
 	if (!type) return null
 	return (
 		<div className={styles.modal}>
@@ -26,5 +26,3 @@ function ModalModeGame({ type, onClose }: PropsType) {
 		</div>
 	)
 }
-
-export default React.memo(ModalModeGame)

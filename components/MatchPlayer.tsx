@@ -1,6 +1,6 @@
 import React from 'react'
 import RenderPlayer from './RenderPlayer'
-import styles from '../../styles/MatchPlayer.module.css'
+import styles from '../styles/MatchPlayer.module.css'
 import { useSelector } from 'react-redux'
 import { RootState } from '../services/reduxjs'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
