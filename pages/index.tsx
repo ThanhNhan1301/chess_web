@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import ModalModeGame from '../components/Modals/ModalModeGame'
+import ModalModeGame from '../components/ModalModeGame'
 import { auth } from '../services/firebase'
 import { addGame } from '../services/reduxjs/reducers/game'
 import styles from '../styles/Home.module.css'
