@@ -23,7 +23,7 @@ function Home() {
 				})
 			)
 		}
-	}, [dispatch])
+	}, [dispatch, auth])
 
 	return (
 		<div className={styles.container}>
