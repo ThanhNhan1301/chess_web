@@ -30,8 +30,8 @@ function Game() {
 		(state: RootState) => state.game_state
 	)
 	const { width } = useBaseSize()
-	const boardSize = width
-	const squareSize = width / 8
+	const boardSize = width > 500 ? 500 : width
+	const squareSize = boardSize / 8
 
 	const [game, setGame] = React.useState<GameType>({
 		board: chess.board(),
