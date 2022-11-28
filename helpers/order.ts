@@ -11,7 +11,7 @@ export interface Position {
 	y: number
 }
 
-export const useGeneralRoomId = (): string => {
+export const generalRoomId = (): string => {
 	return Math.round((Math.random() + Math.random()) * 100000).toString()
 }
 
@@ -64,7 +64,7 @@ export function useCont(initialValue: any) {
 	return ref.current.value
 }
 
-export const useSquareId = (position: Position): Square => {
+export const getSquareId = (position: Position): Square => {
 	const { x, y } = position
 	const symbolX = String.fromCharCode('a'.charCodeAt(0) + x)
 	const symbolY = 8 - y

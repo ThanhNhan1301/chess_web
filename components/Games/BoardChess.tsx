@@ -2,7 +2,7 @@ import { Color, Move, PieceSymbol, Square } from 'chess.js'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { COLORS_BOARD } from '../../configs'
-import { Position, useBaseSize, useSquareId } from '../../helpers/order'
+import { Position, useBaseSize, getSquareId } from '../../helpers/order'
 import { RootState } from '../../services/reduxjs'
 
 interface PropsType {
@@ -66,7 +66,7 @@ function BoardChess({
 								x,
 								y,
 								isChoose: squareChoose
-									? squareChoose.includes(useSquareId({ x, y }))
+									? squareChoose.includes(getSquareId({ x, y }))
 									: false,
 								isCheck:
 									isCheck && piece?.type == 'k' && homeColor == piece.color,
@@ -76,7 +76,7 @@ function BoardChess({
 					>
 						{moves &&
 							moves.some((m) =>
-								m.toString().includes(useSquareId({ x, y }))
+								m.toString().includes(getSquareId({ x, y }))
 							) && (
 								<div
 									style={{

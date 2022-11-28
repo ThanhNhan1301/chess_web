@@ -6,7 +6,7 @@ import { setTimeout } from 'timers/promises'
 import { MemberName } from 'typescript'
 import MatchPlayer from '../components/MatchPlayer'
 import PlayFriend from '../components/PlayFriend'
-import { useGeneralRoomId } from '../helpers/order'
+import { generalRoomId } from '../helpers/order'
 import { auth } from '../services/firebase'
 import {
 	addMemberInWaitingRoom,
@@ -36,7 +36,7 @@ function Home() {
 				listWaitingRooms[Math.floor(Math.random() * listWaitingRooms.length)]
 			setRoomId(roomId)
 		} else {
-			const id = useGeneralRoomId()
+			const id = generalRoomId()
 			await createWaitingRoom(id, (error) =>
 				console.log('Error create Waiting Room::: ', error)
 			)
@@ -57,7 +57,7 @@ function Home() {
 				})
 			)
 		}
-	}, [dispatch, user])
+	}, [dispatch, user, gameState, user, dispatch])
 
 	React.useEffect(() => {
 		if (gameState.roomId) {
@@ -65,10 +65,9 @@ function Home() {
 			setRoomId(undefined)
 			router.push('/game')
 		}
-	}, [gameState.roomId])
+	}, [gameState.roomId, router])
 
 	React.useEffect(() => {
-		let timeout
 		if (mode) {
 			if (mode == 'match') {
 				handleMatchPlayer()

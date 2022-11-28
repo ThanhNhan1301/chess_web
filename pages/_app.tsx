@@ -15,7 +15,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
 			}
 		})
 		return unsubscribe
-	}, [])
+	}, [router])
 
 	return (
 		<Provider store={store}>

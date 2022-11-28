@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import BoardChess from '../components/Games/BoardChess'
 import Piece from '../components/Games/Piece'
 import RenderPlayer from '../components/RenderPlayer'
-import { Position, useBaseSize, useCont, useSquareId } from '../helpers/order'
+import { Position, useBaseSize, useCont, getSquareId } from '../helpers/order'
 import { listenRoomPlaying, updateRoom } from '../services/firebase/api'
 import { RootState } from '../services/reduxjs'
 
@@ -49,7 +49,7 @@ function Game() {
 		const size =
 			boardChess?.clientHeight > width ? width : boardChess?.clientHeight
 		setBoardSize(size)
-	})
+	}, [])
 
 	const [movePiece, setMovePiece] = React.useState<
 		| { from?: Square; to?: Square; moves?: Move[] | string[] | undefined }
@@ -70,7 +70,7 @@ function Game() {
 				}
 			})
 		}
-	}, [roomId])
+	}, [roomId, homeColor])
 
 	const handleUpdateGame = React.useCallback(() => {
 		setGame({
@@ -82,10 +82,10 @@ function Game() {
 				isPromotion: false,
 			},
 		})
-	}, [])
+	}, [chess])
 
 	const handleChooseSquare = ({ x, y }: Position) => {
-		const squareId = useSquareId({ x, y })
+		const squareId = getSquareId({ x, y })
 		const piece = chess.get(squareId)
 		if (piece) {
 			if (piece.color == homeColor) {
@@ -165,7 +165,7 @@ function Game() {
 								moveTo={
 									movePiece?.to &&
 									movePiece.from &&
-									movePiece.from.includes(useSquareId({ x, y }))
+									movePiece.from.includes(getSquareId({ x, y }))
 										? movePiece.to
 										: undefined
 								}

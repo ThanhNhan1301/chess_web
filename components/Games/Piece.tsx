@@ -1,9 +1,8 @@
 import { Color, Square } from 'chess.js'
 import Image from 'next/image'
 import React from 'react'
-import { transform } from 'typescript'
 import { PIECES } from '../../configs'
-import { getTransition, Position, useBaseSize } from '../../helpers/order'
+import { getTransition, Position } from '../../helpers/order'
 import styles from '../../styles/Game.module.css'
 
 interface PropsType {
@@ -53,7 +52,7 @@ function Piece({
 		}
 
 		return () => clearTimeout(timeout)
-	}, [moveTo])
+	}, [moveTo, idEl, x, y, onMoved])
 
 	return (
 		<button
