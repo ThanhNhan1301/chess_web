@@ -11,25 +11,30 @@ export interface Position {
 	y: number
 }
 
-export const useGeneralRoomId = (
-	type: 'playing-room' | 'waiting-room' = 'waiting-room'
-): string => {
-	return `${type}-${Math.round((Math.random() + Math.random()) * 100000)}`
+export const useGeneralRoomId = (): string => {
+	return Math.round((Math.random() + Math.random()) * 100000).toString()
 }
 
-export const useWindowDimension = () => {
-	const [width, setWidth] = React.useState(window.innerWidth)
-	const [height, setHeight] = React.useState(window.innerHeight)
+export const useBaseSize = () => {
+	const [windowSize, setWindowSize] = React.useState<{
+		width: number
+		height: number
+	}>({ width: 0, height: 0 })
+
 	const updateDimensions = () => {
-		setWidth(window.innerWidth)
-		setHeight(window.innerHeight)
+		setWindowSize({
+			width: window.innerWidth,
+			height: window.innerHeight,
+		})
 	}
+
 	React.useEffect(() => {
+		updateDimensions()
 		window.addEventListener('resize', updateDimensions)
 		return () => window.removeEventListener('resize', updateDimensions)
 	}, [])
 
-	return { width, height }
+	return windowSize
 }
 
 export const useBackgroundColor = ({

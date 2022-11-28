@@ -1,26 +1,12 @@
 import React from 'react'
-import RenderPlayer from './RenderPlayer'
-import styles from '../styles/MatchPlayer.module.css'
-import { useSelector } from 'react-redux'
-import { RootState } from '../services/reduxjs'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
-import { getWaitingRooms } from '../services/firebase/api'
+import styles from '../styles/MatchPlayer.module.css'
+import RenderPlayer from './RenderPlayer'
 
 function MatchPlayer() {
-	const { home } = useSelector((state: RootState) => state.game_state)
-
-	React.useEffect(() => {
-		;(async function () {
-			const listWaitingRooms = await getWaitingRooms((error) =>
-				console.log('Get Waiting Rooms error ::: ', error)
-			)
-			console.log(listWaitingRooms)
-		})()
-	}, [])
-
 	return (
 		<div className={styles.container}>
-			<RenderPlayer photoUrl={home?.photoURL} title={home?.name} />
+			<RenderPlayer type="home" />
 			<div className={styles.space}>
 				<div className={styles.line} />
 				<div className={styles.loading}>
@@ -40,4 +26,4 @@ function MatchPlayer() {
 	)
 }
 
-export default MatchPlayer
+export default React.memo(MatchPlayer)

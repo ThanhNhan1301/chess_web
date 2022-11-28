@@ -5,13 +5,14 @@ export interface MemberType {
 	name: string | undefined | null
 	uid: string | undefined
 	photoURL: ReturnType<typeof require>
+	color?: Color
 }
 
 interface GameType {
 	roomId: string | undefined
 	home?: MemberType
 	away?: MemberType
-	homeColor?: 'w' | 'b'
+	homeColor?: Color
 }
 
 export const initialRoomValue: GameType = {
