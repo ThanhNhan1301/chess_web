@@ -30,8 +30,8 @@ function Game() {
 		(state: RootState) => state.game_state
 	)
 	const { width } = useBaseSize()
-	const [boardSize, setBoardSize] = React.useState<number>(width)
-	const squareSize = boardSize / 8
+	const boardSize = width
+	const squareSize = width / 8
 
 	const [game, setGame] = React.useState<GameType>({
 		board: chess.board(),
@@ -43,13 +43,6 @@ function Game() {
 		},
 	})
 
-	React.useEffect(() => {
-		const boardChess = document.querySelector('#board-chess')
-		if (!boardChess) return
-		const size =
-			boardChess?.clientHeight > width ? width : boardChess?.clientHeight
-		setBoardSize(size)
-	}, [])
 
 	const [movePiece, setMovePiece] = React.useState<
 		| { from?: Square; to?: Square; moves?: Move[] | string[] | undefined }

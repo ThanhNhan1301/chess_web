@@ -45,7 +45,7 @@ function Home() {
 	}
 
 	React.useEffect(() => {
-		if (user) {
+		if (user && !gameState.roomId) {
 			dispatch(
 				addGame({
 					...gameState,
@@ -57,7 +57,7 @@ function Home() {
 				})
 			)
 		}
-	}, [dispatch, user, gameState, user, dispatch])
+	}, [dispatch, user, gameState.roomId, user, dispatch])
 
 	React.useEffect(() => {
 		if (gameState.roomId) {
