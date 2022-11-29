@@ -11,30 +11,34 @@ export interface Position {
 	y: number
 }
 
+export interface Dimensions {
+	width: number
+	height: number
+}
+
 export const generalRoomId = (): string => {
 	return Math.round((Math.random() + Math.random()) * 100000).toString()
 }
 
-export const useBaseSize = () => {
-	const [windowSize, setWindowSize] = React.useState<{
-		width: number
-		height: number
-	}>({ width: 0, height: 0 })
-
-	const updateDimensions = () => {
-		setWindowSize({
-			width: window.innerWidth,
-			height: window.innerHeight,
-		})
-	}
+export const useDimensions = (): Dimensions => {
+	const [dimensions, setDimensions] = React.useState<Dimensions>({
+		width: 0,
+		height: 0,
+	})
 
 	React.useEffect(() => {
-		updateDimensions()
-		window.addEventListener('resize', updateDimensions)
-		return () => window.removeEventListener('resize', updateDimensions)
+		const handleResize = () => {
+			setDimensions({
+				width: window.innerWidth,
+				height: window.innerHeight,
+			})
+		}
+		handleResize()
+		window.addEventListener('resize', handleResize)
+		return () => window.removeEventListener('resize', handleResize)
 	}, [])
 
-	return windowSize
+	return dimensions
 }
 
 export const useBackgroundColor = ({

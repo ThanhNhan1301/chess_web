@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import BoardChess from '../components/Games/BoardChess'
 import Piece from '../components/Games/Piece'
 import RenderPlayer from '../components/RenderPlayer'
-import { Position, useBaseSize, useCont, getSquareId } from '../helpers/order'
+import { Position, useDimensions, useCont, getSquareId } from '../helpers/order'
 import { listenRoomPlaying, updateRoom } from '../services/firebase/api'
 import { RootState } from '../services/reduxjs'
 
@@ -29,9 +29,8 @@ function Game() {
 	const { homeColor, roomId, home, away } = useSelector(
 		(state: RootState) => state.game_state
 	)
-	const { width } = useBaseSize()
-	const boardSize = width > 500 ? 500 : width
-	const squareSize = boardSize / 8
+	const { width } = useDimensions()
+	const boardSize = width > 450 ? 450 : width
 
 	const [game, setGame] = React.useState<GameType>({
 		board: chess.board(),
@@ -42,7 +41,6 @@ function Game() {
 			isPromotion: false,
 		},
 	})
-
 
 	const [movePiece, setMovePiece] = React.useState<
 		| { from?: Square; to?: Square; moves?: Move[] | string[] | undefined }
@@ -143,7 +141,7 @@ function Game() {
 					board={game.board}
 					onChooseSquare={handleChooseSquare}
 					moves={movePiece?.moves}
-					squareSize={squareSize}
+					squareSize={boardSize ? boardSize / 8 : 0}
 					squareChoose={movePiece?.from}
 					isCheck={homeColor == game.turn && game.state.isCheck}
 				/>
@@ -153,7 +151,7 @@ function Game() {
 							<Piece
 								onChooseSquare={handleChooseSquare}
 								key={Math.random() * Math.random()}
-								squareSize={squareSize}
+								squareSize={boardSize ? boardSize / 8 : 0}
 								home={homeColor}
 								moveTo={
 									movePiece?.to &&

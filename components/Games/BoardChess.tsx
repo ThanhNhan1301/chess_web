@@ -2,7 +2,7 @@ import { Color, Move, PieceSymbol, Square } from 'chess.js'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { COLORS_BOARD } from '../../configs'
-import { Position, useBaseSize, getSquareId } from '../../helpers/order'
+import { Position, getSquareId } from '../../helpers/order'
 import { RootState } from '../../services/reduxjs'
 
 interface PropsType {
@@ -62,6 +62,7 @@ function BoardChess({
 							alignItems: 'center',
 							boxShadow: 'none',
 							borderRadius: 0,
+							padding: 0,
 							background: generalBackgroundColor({
 								x,
 								y,

@@ -28,8 +28,8 @@ function RenderPlayer({
 			<Image
 				src={photoUrl || home?.photoURL}
 				alt="player"
-				width={60}
-				height={60}
+				width={50}
+				height={50}
 				className={styles.img}
 				priority={true}
 			/>
