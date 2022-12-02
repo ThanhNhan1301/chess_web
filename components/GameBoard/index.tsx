@@ -171,7 +171,9 @@ function GameBoard() {
 
 	return (
 		<>
-			<ModalGameOver turn={game.turn} handleFinish={handleFinish} />
+			{game.state.isGameOver ? (
+				<ModalGameOver turn={game.turn} handleFinish={handleFinish} />
+			) : null}
 			<div
 				className={styles.board}
 				style={{
