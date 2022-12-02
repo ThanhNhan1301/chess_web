@@ -1,145 +1,105 @@
-import { Players } from '../../configs'
-
+import { generalRoomId } from './../../components/GameBoard/helpers/order'
+import { Players } from './../../components/GameBoard/constant/index'
+import { MemberType } from './../reduxjs/reducers/game'
+import { Move } from 'chess.js'
 import {
-	getDocs,
 	collection,
-	query,
-	where,
-	DocumentData,
 	doc,
-	setDoc,
+	DocumentData,
+	getDocs,
 	onSnapshot,
-	deleteDoc,
+	query,
+	setDoc,
 	updateDoc,
+	where,
 } from 'firebase/firestore'
-import { auth, db } from '../firebase'
+import { db, auth } from '../firebase'
 
-
-export async function getWaitingRooms(handleError?: (error: any) => void) {
-	let res: DocumentData[] = []
-	try {
-		const ref = collection(db, 'WaitingRooms')
-		const q = query(ref, where('isReady', '==', false))
-
-		await getDocs(q).then((result) => {
-			result.forEach((room) => room && res.push(room.data()))
-		})
-
-		return res
-	} catch (error: any) {
-		handleError && handleError(error)
-	}
+export interface RoomData {
+	isReady: boolean
+	isFinish: boolean
+	move: Move | string | null
+	members: MemberType[]
+	id: string
 }
 
-export const createWaitingRoom = async (
-	id: string,
-	handleError?: (error: any) => void
-) => {
+export async function getRooms(handleError?: (error: any) => void) {
 	try {
-		const user = auth.currentUser
-		const data = {
-			isReady: false,
-			roomId: id,
-			members: [
-				{
-					name: user?.displayName,
-					color: Players[Math.floor(Math.random() * Players.length)],
-					uid: user?.uid,
-					photoURL: user?.photoURL,
-				},
-			],
-		}
-		const refRoom = doc(db, 'WaitingRooms', id)
-		await setDoc(refRoom, data)
+		let data: DocumentData[] = []
+		const q = query(collection(db, 'Rooms'), where('isReady', '==', false))
+		const querySnapshot = await getDocs(q)
+		querySnapshot.forEach((doc) => doc && data.push(doc.data()))
 		return data
 	} catch (error) {
-		console.log(error)
 		handleError && handleError(error)
 	}
 }
 
-export const listenWaitingRoom = (
-	roomId: string,
-	callback: (data: any) => void
-) => {
-	let unsubscribe
-	if (!roomId) return
-	const refWaitingRooms = doc(db, 'WaitingRooms', roomId)
-	unsubscribe = onSnapshot(
-		refWaitingRooms,
-		(result) => callback && callback(result.data())
-	)
+export async function createNewRooms(handleError?: (error: any) => void) {
+	try {
+		const user = auth.currentUser
+		if (!user) throw 'Chua dang nhap'
+		const roomId = generalRoomId()
 
-	return unsubscribe
+		const data: RoomData = {
+			id: roomId,
+			isReady: false,
+			isFinish: false,
+			members: [
+				{
+					name: user.displayName,
+					uid: user.uid,
+					photoURL: user.photoURL,
+					color: Players[Math.floor(Math.random() * 2)],
+				},
+			],
+			move: null,
+		}
+		const ref = doc(db, 'Rooms', roomId)
+		await setDoc(ref, data)
+		return data
+	} catch (error) {
+		handleError && handleError(error)
+		return undefined
+	}
 }
 
-export const listenRoomPlaying = (
-	roomId: string,
-	callback: (data: any) => void
-) => {
-	let unsubscribe
-	if (!roomId) return
-	const refRoomPlaying = doc(db, 'Rooms', roomId)
-	unsubscribe = onSnapshot(
-		refRoomPlaying,
-		(result) => callback && callback(result.data())
-	)
-
-	return unsubscribe
+export async function updateRoom(
+	roomId: string | undefined,
+	data: any,
+	handleError?: (error: any) => void
+) {
+	try {
+		if (!roomId || !data) throw 'Lỗi không xác định...'
+		const ref = doc(db, 'Rooms', roomId)
+		return await updateDoc(ref, data)
+	} catch (error) {
+		return handleError && handleError(error)
+	}
 }
 
-export const createRoomPlaying = async (
+export async function addMemberRoom(
 	roomId: string,
 	data: any,
 	handleError?: (error: any) => void
-) => {
+) {
 	try {
-		if (!roomId) return
-		const roomRef = doc(db, 'Rooms', roomId)
-		await setDoc(roomRef, data)
-		return roomId
+		await updateDoc(doc(db, 'Rooms', roomId), data)
 	} catch (error) {
 		handleError && handleError(error)
 	}
 }
 
-export const deleteRoom = async (
+export async function snapshotRoom(
 	roomId: string,
-	collection: string,
+	getData: (data: DocumentData | RoomData| undefined) => void,
 	handleError?: (error: any) => void
-) => {
-	if (!roomId || !collection) return
+) {
 	try {
-		const refRoom = doc(db, collection, roomId)
-		await deleteDoc(refRoom)
-	} catch (error) {
-		handleError && handleError(error)
-	}
-}
-
-export const addMemberInWaitingRoom = async (
-	roomId: string,
-	data: any,
-	handleError?: (error: any) => void
-) => {
-	try {
-		if (!roomId || !data) throw 'Error invalid'
-		const roomRef = doc(db, 'WaitingRooms', roomId)
-		await updateDoc(roomRef, data)
-	} catch (error) {
-		handleError && handleError(error)
-	}
-}
-
-export const updateRoom = async (
-	roomId: string,
-	data: any,
-	handleError?: (error: any) => void
-) => {
-	try {
-		if (!roomId || !data) throw 'Error invalid'
-		const refRoom = doc(db, 'Rooms', roomId)
-		await updateDoc(refRoom, data)
+		onSnapshot(doc(db, 'Rooms', roomId), (result) => {
+			const data = result.data()
+			getData(data)
+		})
 	} catch (error) {
 		handleError && handleError(error)
 	}

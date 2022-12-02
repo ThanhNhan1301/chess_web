@@ -1,158 +1,125 @@
-import { useRouter } from 'next/router'
-import React from 'react'
-import { AiFillCloseSquare } from 'react-icons/ai'
+import { DocumentData } from 'firebase/firestore'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setTimeout } from 'timers/promises'
-import { MemberName } from 'typescript'
-import MatchPlayer from '../components/MatchPlayer'
-import PlayFriend from '../components/PlayFriend'
-import { generalRoomId } from '../helpers/order'
+import GameBoard from '../components/GameBoard'
+import ModalGameType from '../components/Modals/GameType'
+import ModalGameOver from '../components/Modals/ModalGameOver'
 import { auth } from '../services/firebase'
 import {
-	addMemberInWaitingRoom,
-	createRoomPlaying,
-	createWaitingRoom,
-	deleteRoom,
-	getWaitingRooms,
-	listenWaitingRoom,
+	addMemberRoom,
+	createNewRooms,
+	getRooms,
+	snapshotRoom,
 } from '../services/firebase/api'
-
 import { RootState } from '../services/reduxjs'
-import { addGame, MemberType } from '../services/reduxjs/reducers/game'
-import styles from '../styles/Home.module.css'
+import game, { addGame, MemberType } from '../services/reduxjs/reducers/game'
+import styles from '../styles/home.module.scss'
 
 function Home() {
-	const gameState = useSelector((state: RootState) => state.game_state)
-	const [mode, setMode] = React.useState<'friend' | 'match' | undefined>()
-	const [roomId, setRoomId] = React.useState<string | undefined>()
-	const router = useRouter()
-	const dispatch = useDispatch()
+	const { roomId } = useSelector((state: RootState) => state.game_state)
+	const [waiting, setWaiting] = useState<string | undefined>()
+
 	const user = auth.currentUser
 
-	const handleMatchPlayer = async function () {
-		const listWaitingRooms = await getWaitingRooms()
-		if (listWaitingRooms?.length) {
-			const { roomId } =
-				listWaitingRooms[Math.floor(Math.random() * listWaitingRooms.length)]
-			setRoomId(roomId)
-		} else {
-			const id = generalRoomId()
-			await createWaitingRoom(id, (error) =>
-				console.log('Error create Waiting Room::: ', error)
-			)
-			setRoomId(id)
-		}
-	}
+	const [gameType, setGameType] = useState<
+		'match-friend' | 'match-player' | undefined
+	>()
 
-	React.useEffect(() => {
-		if (user && !gameState.roomId) {
-			dispatch(
-				addGame({
-					...gameState,
-					home: {
-						name: user.displayName,
-						uid: user.uid,
-						photoURL: user.photoURL,
-					},
-				})
-			)
-		}
-	}, [dispatch, user, gameState.roomId, user, dispatch])
+	const dispatch = useDispatch()
 
-	React.useEffect(() => {
-		if (gameState.roomId) {
-			setMode(undefined)
-			setRoomId(undefined)
-			router.push('/game')
-		}
-	}, [gameState.roomId, router])
+	useEffect(() => {
+		if (waiting) {
+			snapshotRoom(
+				waiting,
+				(data) => {
+					if (data) {
+						const { members } = data
+						if (members.length == 2) {
+							const home = members.filter(
+								(member: MemberType) => member.uid == user?.uid
+							)[0]
 
-	React.useEffect(() => {
-		if (mode) {
-			if (mode == 'match') {
-				handleMatchPlayer()
-			}
-		}
-	}, [mode, roomId])
+							const away = members.filter(
+								(member: MemberType) => member.uid != user?.uid
+							)[0]
 
-	React.useEffect(() => {
-		if (roomId && user) {
-			listenWaitingRoom(roomId, async (data) => {
-				if (data) {
-					const members = data.members as MemberType[]
-					if (members.length == 2) {
-						const away = members.filter((m: MemberType) => m.uid != user.uid)[0]
-						const home = members.filter((m: MemberType) => m.uid == user.uid)[0]
-						if (members[0].uid == user.uid) {
-							await createRoomPlaying(roomId, {
-								members,
-								roomId,
-								move: null,
-								isFinish: false,
-							})
-						} else {
-							await deleteRoom(roomId, 'WaitingRooms', (error) =>
-								console.log('Delete waiting room error::: ', error)
+							dispatch(
+								addGame({
+									roomId: data.id,
+									home,
+									away,
+									homeColor: home.color,
+								})
 							)
-						}
-						dispatch(
-							addGame({
-								home,
-								away,
-								roomId,
-								homeColor: home.color,
-							})
-						)
-					} else {
-						if (members[0].uid != user.uid) {
-							await addMemberInWaitingRoom(roomId, {
-								members: [
-									...members,
-									{
-										name: user.displayName,
-										uid: user.uid,
-										photoURL: user.photoURL,
-										color: members[0] && members[0].color == 'w' ? 'b' : 'w',
-									},
-								],
-								isReady: true,
-							})
+							setGameType(undefined)
+						} else {
+							if (members[0].uid != user?.uid) {
+								;(async () => {
+									const dataUpdate = {
+										members: [
+											...members,
+											{
+												name: user?.displayName,
+												uid: user?.uid,
+												photoURL: user?.photoURL,
+												color: members[0].color == 'w' ? 'b' : 'w',
+											},
+										],
+										isReady: true,
+									}
+									await addMemberRoom(waiting, dataUpdate)
+								})()
+							}
 						}
 					}
-				}
-			})
+				},
+				(error) => console.log('Listen Room Data Error::: ', error)
+			)
 		}
-	}, [roomId])
+	}, [waiting])
+
+	useEffect(() => {
+		if (gameType == 'match-player') {
+			;(async () => {
+				const rooms = await getRooms()
+				if (rooms?.length) {
+					const room =
+						rooms.filter(
+							(room: DocumentData) => room.members[0].uid == user?.uid
+						)[0] || rooms[Math.floor(Math.random() * rooms.length)]
+					setWaiting(room.id)
+				} else {
+					const room = await createNewRooms()
+					if (room) {
+						setWaiting(room.id)
+					}
+				}
+			})()
+		}
+	}, [gameType])
 
 	return (
-		<div className={styles.container}>
-			{mode && (
-				<div className={styles.modal}>
-					<div className={styles.modal_content}>
-						<AiFillCloseSquare
-							className={styles.btnClose}
-							size={36}
-							color="red"
-							onClick={() => setMode(undefined)}
-						/>
-						{mode == 'friend' ? <PlayFriend /> : <MatchPlayer />}
+		<>
+			{roomId && <div>roomId:: {roomId}</div>}
+			<div className={styles.container}>
+				{roomId ? (
+					<GameBoard />
+				) : (
+					<div>
+						<button className={`${styles.btn} ${styles.btnMatchFriend}`}>
+							Chơi với bạn bè
+						</button>
+						<button
+							className={`${styles.btn} ${styles.btnMatchPlayer}`}
+							onClick={() => setGameType('match-player')}
+						>
+							Tìm người chơi
+						</button>
 					</div>
-				</div>
-			)}
-
-			<button
-				className={styles.btnPlayWithFriends}
-				onClick={() => setMode('friend')}
-			>
-				Chơi với bạn bè
-			</button>
-			<button
-				className={styles.btnPlayMatchPlayer}
-				onClick={() => setMode('match')}
-			>
-				Tìm người chơi
-			</button>
-		</div>
+				)}
+				<ModalGameType type={gameType} />
+			</div>
+		</>
 	)
 }
 

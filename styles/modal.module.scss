@@ -1,0 +1,80 @@
+@mixin flexCenter {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.container {
+	position: fixed;
+	inset: 0;
+	background-color: rgba($color: black, $alpha: 0.3);
+	@include flexCenter();
+}
+
+.content {
+	width: 90%;
+	max-width: 400px;
+	background-color: white;
+	border-radius: 8px;
+	box-shadow: 2px 2px 5px rgba($color: black, $alpha: 0.5);
+	padding: 30px 20px;
+	@include flexCenter();
+}
+
+.matchPlayer {
+	@include flexCenter();
+	width: 100%;
+	flex-direction: column;
+}
+
+.matchPlayer_userInfo {
+	@include flexCenter();
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.matchPlayer_userInfo_image {
+	border-radius: 50px;
+	box-shadow: 0 0 0 5px #eee;
+}
+
+.matchPlayer_userInfo_name {
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.loading {
+	width: 100%;
+	height: 2.5px;
+	background-color: green;
+	margin: 70px 0;
+	position: relative;
+	border-radius: 10px;
+  transform: rotate(-10deg);
+}
+
+.loading_wrapper {
+	width: 45px;
+	height: 45px;
+	border-radius: 100px;
+	background-color: white;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	@include flexCenter();
+}
+
+.loading_icon {
+	animation: infinite_loading 1s linear infinite;
+}
+
+@keyframes infinite_loading {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}

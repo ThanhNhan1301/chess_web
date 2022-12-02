@@ -1,21 +1,16 @@
+import { useEffect } from 'react'
 import type { AppProps } from 'next/app'
-import React from 'react'
 import { Provider } from 'react-redux'
-import { auth } from '../services/firebase'
 import store from '../services/reduxjs'
 import '../styles/globals.css'
+import { auth } from '../services/firebase'
 
 export default function App({ Component, pageProps, router }: AppProps) {
-	React.useEffect(() => {
-		const unsubscribe = auth.onAuthStateChanged((user) => {
-			if (user) {
-				router.push('/')
-			} else {
-				router.push('/signin')
-			}
-		})
-		return unsubscribe
-	}, [router])
+	useEffect(() => {
+		auth.onAuthStateChanged((user) =>
+			user ? router.push('/') : router.push('/signin')
+		)
+	}, [])
 
 	return (
 		<Provider store={store}>

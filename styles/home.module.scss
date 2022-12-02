@@ -1,0 +1,22 @@
+.container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: palegoldenrod;
+}
+
+.btn {
+  margin: 16px 0;
+  min-width: 200px;
+  color: white;
+}
+
+.btnMatchFriend {
+  background-color: orangered;
+}
+
+.btnMatchPlayer {
+  background-color: green;
+}

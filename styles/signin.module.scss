@@ -1,0 +1,20 @@
+.container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnSignin {
+  gap: 6px;
+  background-color: red;
+  color: white;
+  letter-spacing: 1.5;
+  transition: all 0.3s ease-in-out;
+	opacity: 0.85;
+}
+
+.btnSignin:active {
+  opacity: 1;
+}

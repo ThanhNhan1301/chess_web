@@ -1,10 +1,6 @@
-import { useSelector } from 'react-redux'
-import { RootState } from '../services/reduxjs'
-import { MemberType } from '../services/reduxjs/reducers/game'
-import { auth } from '../services/firebase'
-import React from 'react'
 import { Square } from 'chess.js'
-import { COLORS_BOARD } from '../configs'
+import React from 'react'
+import { COLORS_BOARD } from '../constant'
 
 export interface Position {
 	x: number
@@ -84,4 +80,20 @@ export const getTransition = (squareId: Square = 'a1', size: number = 0) => {
 		transformX,
 		transformY,
 	}
+}
+
+export const generalBackgroundColor = ({
+	x,
+	y,
+	isChoose,
+	isCheck,
+}: {
+	x: number
+	y: number
+	isChoose: boolean
+	isCheck: boolean
+}) => {
+	if (isChoose) return 'orange'
+	if (isCheck) return 'red'
+	return y % 2 == 0 ? COLORS_BOARD[x % 2] : COLORS_BOARD[1 - (x % 2)]
 }

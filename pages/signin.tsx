@@ -1,17 +1,20 @@
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 import React from 'react'
+import styles from '../styles/signin.module.scss'
+import { AiOutlineGoogle } from 'react-icons/ai'
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+
 import { auth } from '../services/firebase'
-import styles from '../styles/Signin.module.css'
 
 function Signin() {
-	const handleSignin = React.useCallback(async () => {
-		const providerGoogle = new GoogleAuthProvider()
-		await signInWithPopup(auth, providerGoogle)
-	}, [])
+	const handleSignin = async () => {
+		const provider = new GoogleAuthProvider()
+		await signInWithPopup(auth, provider)
+	}
 	return (
 		<div className={styles.container}>
 			<button className={styles.btnSignin} onClick={handleSignin}>
-				Đăng nhập Google
+				<AiOutlineGoogle size={20} />
+				<span>Đăng nhập Google</span>
 			</button>
 		</div>
 	)

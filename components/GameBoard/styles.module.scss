@@ -1,0 +1,27 @@
+.board {
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+  box-shadow: 2px 2px 5px rgba($color: #000000, $alpha: 0.4);
+}
+
+.square {
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+.piece {
+  background-color: transparent;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.suggest {
+  width: 85%;
+  height: 85%;
+  border: 3px solid #FD841F;
+  border-radius: 4px;
+}
