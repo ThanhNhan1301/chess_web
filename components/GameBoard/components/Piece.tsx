@@ -51,7 +51,7 @@ function Piece({
 			)
 			animation.addEventListener('finish', onMoved)
 		}
-	}, [move])
+	}, [move, onMoved, x, y, size, squareId])
 
 	return (
 		<button

@@ -80,7 +80,7 @@ function GameBoard() {
 				console.log('Update Game Error::: ', error)
 			)
 		}
-	}, [chess, move])
+	}, [chess, move, updateGame])
 
 	// Xử lý chọn ô cờ
 	const handleChooseSquare = useCallback(
@@ -132,7 +132,7 @@ function GameBoard() {
 				)
 			}
 		},
-		[move, chess]
+		[move, chess, updateGame]
 	)
 
 	const updatePoint = useCallback(async () => {
@@ -140,14 +140,14 @@ function GameBoard() {
 		await updateRoom(roomId, { isFinish: true }, (error) =>
 			console.log('Update Game Error::: ', error)
 		)
-	}, [])
+	}, [roomId])
 
 	const handleFinish = useCallback(() => {
 		chess.reset()
 		updateGame()
 		updatePoint()
 		dispatch(addGame(initialRoomValue))
-	}, [chess, dispatch])
+	}, [chess, updateGame, updatePoint, dispatch])
 
 	// Lấy dữ liệu nước đi của người chơi
 	useEffect(() => {
@@ -167,7 +167,7 @@ function GameBoard() {
 				(error) => console.log('Listen room data::: ', error)
 			)
 		}
-	}, [roomId])
+	}, [roomId, homeColor, dispatch])
 
 	return (
 		<>

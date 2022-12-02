@@ -10,7 +10,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
 		auth.onAuthStateChanged((user) =>
 			user ? router.push('/') : router.push('/signin')
 		)
-	}, [])
+	}, [router])
 
 	return (
 		<Provider store={store}>

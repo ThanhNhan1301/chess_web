@@ -76,7 +76,7 @@ function Home() {
 				(error) => console.log('Listen Room Data Error::: ', error)
 			)
 		}
-	}, [waiting])
+	}, [waiting, user?.displayName, user?.photoURL, user?.uid, dispatch])
 
 	useEffect(() => {
 		if (gameType == 'match-player') {
@@ -96,7 +96,7 @@ function Home() {
 				}
 			})()
 		}
-	}, [gameType])
+	}, [gameType, user?.uid])
 
 	return (
 		<>
