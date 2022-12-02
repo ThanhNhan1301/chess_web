@@ -80,7 +80,7 @@ function GameBoard() {
 				console.log('Update Game Error::: ', error)
 			)
 		}
-	}, [chess, move, updateGame])
+	}, [chess, move, roomId, updateGame])
 
 	// Xử lý chọn ô cờ
 	const handleChooseSquare = useCallback(
@@ -115,7 +115,7 @@ function GameBoard() {
 			}
 			return setMove(undefined)
 		},
-		[move, chess]
+		[move, chess, homeColor]
 	)
 
 	const handleOnChoosePromotion = useCallback(
@@ -132,7 +132,7 @@ function GameBoard() {
 				)
 			}
 		},
-		[move, chess, updateGame]
+		[move, chess, updateGame, roomId]
 	)
 
 	const updatePoint = useCallback(async () => {
